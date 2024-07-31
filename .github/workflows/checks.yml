@@ -15,3 +15,5 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test Docker
+        run : docker-compose run -rm app sh -c "django-admin startproject app ."    
