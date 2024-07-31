@@ -1,0 +1,89 @@
+<html><head>
+        <title></title>
+    <meta charset="utf-8">
+<script>
+
+        // Function to retrieve environment variables
+        async function getEnvironmentVariables() {
+            const dataverseUrl = window.parent.location.origin + "/api/data/v9.0/environmentvariabledefinitions?$expand=environmentvariabledefinition_environmentvariablevalue";
+            // Fetch the organization settings
+            try {
+                const response = await fetch(dataverseUrl, {
+                    method: 'GET',
+                    headers: {
+                        'OData-MaxVersion': '4.0',
+                        'OData-Version': '4.0',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json; charset=utf-8'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok while fetching organization settings:' + response.statusText);
+                }
+
+                const data = await response.json();   
+                console.log('Retrieved Environment Variables:', data.value);    
+                return data.value;
+            } catch (error) {
+            console.error('Error retrieving environment variables:', error);
+            return [];
+            }
+        }
+      
+        async function fetchCompanyCodeFromOrganizationSetting() {
+            const dataverseUrl = window.parent.location.origin + "/api/data/v9.0/wsl_organizationsettingses";
+            // Fetch the organization settings
+            try {
+                const response = await fetch(dataverseUrl, {
+                    method: 'GET',
+                    headers: {
+                        'OData-MaxVersion': '4.0',
+                        'OData-Version': '4.0',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json; charset=utf-8'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok while fetching organization settings:' + response.statusText);
+                }
+
+                const data = await response.json(); 
+                if(data){
+                    const organizationSetting = data.value[0]; 
+                    return organizationSetting['wsl_companycode'];
+                }
+                else{
+                    return "";
+                } 
+            } catch (error) {
+                console.error('Error fetching organization settings:', error);
+            }
+        }
+async function processParameters() {   
+     const companyCode = await fetchCompanyCodeFromOrganizationSetting();
+    const params = new URLSearchParams(window.parent.location.href);     
+    var uiUri = "";
+   await getEnvironmentVariables().then(environmentVariables => {
+    var environmentVariables = environmentVariables.find(env => env.schemaname === 'wsl_Marketplace_Portfolio_Analytics_UI_URI');
+    uiUri = environmentVariables.environmentvariabledefinition_environmentvariablevalue[0]?.value; 
+  
+  });
+    // Retrieve specific parameters
+    const accountId = params.get('id');  
+    var urlval = uiUri + '?accountId=' + accountId + '&companyId='+ companyCode ;
+    // Do something with the parameters within the iframe
+    console.log("Processing parameters in iframe:", urlval);   
+    document.getElementById('plframe').src = urlval;
+}
+</script>
+
+    <meta><meta></head>
+    <body onload="processParameters()" onfocusout="parent.setEmailRange();" style="overflow-wrap: break-word;">
+    
+    <div id="results">
+        <iframe width="100%" height="100%" id="plframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" src=""></iframe>
+    </div>
+
+</body></html>
