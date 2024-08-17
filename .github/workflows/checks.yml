@@ -16,7 +16,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Test Docker
-        run : docker-compose run -rm app sh -c "django-admin startproject app ." 
+        run : docker-compose run --rm app sh -c "django-admin startproject app ." 
   test-lint:
     name: Test and Lint
     runs-on: ubuntu-20.04
