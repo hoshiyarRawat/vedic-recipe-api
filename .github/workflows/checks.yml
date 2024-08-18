@@ -11,8 +11,7 @@ jobs:
       -
         name: Login to GitHub Container Registry
         uses: docker/login-action@v3
-        with:
-          registry: vedic-recipe-api
+        with:         
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Test Docker
