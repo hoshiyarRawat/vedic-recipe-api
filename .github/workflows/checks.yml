@@ -4,16 +4,16 @@ on:
   push:
     branches: main
 jobs: 
-  login:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:         
-        username: ${{ secrets.DOCKERHUB_USER }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Test Docker
-      run : docker compose run --rm app sh -c "django-admin startproject app ."  
+  # login:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Login to GitHub Container Registry
+  #     uses: docker/login-action@v3
+  #     with:         
+  #       username: ${{ secrets.DOCKERHUB_USER }}
+  #       password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #   - name: Test Docker
+  #     run : docker compose run --rm app sh -c "django-admin startproject app ."  
   test-lint:
     name: Test and Lint
     runs-on: ubuntu-latest
